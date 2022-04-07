@@ -1,12 +1,8 @@
 # Databricks notebook source
 # MAGIC %md # Pandas Function APIs
-# MAGIC **U**ser **D**efined **F**unctions are a convenient way to reuse logic that needs to be be executed on datasets.
-# MAGIC UDFs are also used to wrap complex logic, such as ML (or even DL) models, and make it accessible for downstream consumers in SQL.
-# MAGIC <p>
-# MAGIC In this notebook, we'll only focus on **pandas_udf** (but there are other types of UDFs).
-# MAGIC <p>pandas_udfs use [Arrow](https://arrow.apache.org/) to cut down on serialization between the JVM and python. Some operations can also benefit from Pandas' vectorized operations to gain an additional performance boost.
-# MAGIC 
-# MAGIC   <img src="https://databricks.com/wp-content/uploads/2017/10/image1-4.png" width="400" height="200" display="block" margin-left="auto" margin-right="auto">
+# MAGIC Pandas Function APIs, added in Apache Spark 3.0, enable you to directly apply a Python native function, which takes and outputs Pandas instances against a PySpark DataFrame.
+# MAGIC <br>
+# MAGIC Pandas Function APIs supported in the latest Apache Spark version (3.2.1) are: grouped map, map, and co-grouped map.
 
 # COMMAND ----------
 
@@ -86,7 +82,5 @@ outputDF.display()
 # COMMAND ----------
 
 # MAGIC %md ### Read More
-# MAGIC * [Databricks blog post](https://databricks.com/blog/2020/05/20/new-pandas-udfs-and-python-type-hints-in-the-upcoming-release-of-apache-spark-3-0.html)
-# MAGIC * [PySpark documentation](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.pandas_udf.html)
-# MAGIC * [Benchmark notebook](https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/1281142885375883/2174302049319883/7729323681064935/latest.html)
-# MAGIC * ["Old UDFs" vs pandas_udfs](https://databricks.com/blog/2017/10/30/introducing-vectorized-udfs-for-pyspark.html)
+# MAGIC * [Databricks blog post - New Pandas UDFs and Python Type Hints in the Upcoming Release of Apache Spark 3.0](https://databricks.com/blog/2020/05/20/new-pandas-udfs-and-python-type-hints-in-the-upcoming-release-of-apache-spark-3-0.html)
+# MAGIC * [PySpark documentation - Pandas Function APIs](https://spark.apache.org/docs/latest/api/python/user_guide/sql/arrow_pandas.html#pandas-function-apis)
