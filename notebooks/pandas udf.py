@@ -2,11 +2,16 @@
 # MAGIC %md # pandas_udf
 # MAGIC **U**ser **D**efined **F**unctions are a convenient way to reuse logic that needs to be be executed on datasets.
 # MAGIC UDFs are also used to wrap complex logic, such as ML (or even DL) models, and make it accessible for downstream consumers in SQL.
-# MAGIC <p>
+# MAGIC <br>
 # MAGIC In this notebook, we'll only focus on **pandas_udf** (but there are other types of UDFs).
-# MAGIC <p>pandas_udfs use [Arrow](https://arrow.apache.org/) to cut down on serialization between the JVM and python. Some operations can also benefit from Pandas' vectorized operations to gain an additional performance boost.
-# MAGIC 
-# MAGIC   <img src="https://databricks.com/wp-content/uploads/2017/10/image1-4.png" width="400" height="200" display="block" margin-left="auto" margin-right="auto">
+# MAGIC <br>
+# MAGIC pandas_udfs use [Apache Arrow](https://arrow.apache.org/) to cut down on serialization between the JVM and python. 
+# MAGIC <br>
+# MAGIC Some operations can also benefit from Pandas' vectorized operations to gain an additional performance boost.
+# MAGIC <br><br>
+# MAGIC <img src="https://databricks.com/wp-content/uploads/2017/10/image1-4.png" width="800" height="400" display="block" margin-left="center" margin-right="center">
+# MAGIC <br>
+# MAGIC Source: https://databricks.com/blog/2017/10/30/introducing-vectorized-udfs-for-pyspark.html
 
 # COMMAND ----------
 
@@ -32,10 +37,7 @@ display(df)
 import pandas as pd
 from pyspark.sql.functions import pandas_udf       
 
-# This UDF accepts a series of items of type "long", and returns a series of items of the same type
-@pandas_udf('long')
-def pandas_plus_one_vectorized(s: pd.Series) -> pd.Series:
-    return s + 1 
+
 
 # This UDF accepts a series of items of type "string", and returns a series of items of the same type
 @pandas_udf('string')
@@ -43,23 +45,22 @@ def pandas_uppercase(s: pd.Series) -> pd.Series:
     return s.apply(lambda x: x.upper())
 
 
-# For each record, we will apply 2 UDFs (on "id" column and on "firstName" column)
-df.select(pandas_plus_one_vectorized("id").alias("id_plus_one"), \
+# For each record, we will apply a UDF on "firstName" column
+df.select("id", \
           pandas_uppercase("firstName").alias("uc_name")).display()
 
 
 # COMMAND ----------
 
 # DBTITLE 1,Once registered, UDFs can be called directly from SQL
-# Register the UDFs (so they can be called from SQL)
+# Register the UDF (so it can be called from SQL)
 # The first argument is how we will call the UDF from SQL, and the second argument is the name of the function itself
-spark.udf.register("p_plus1", pandas_plus_one_vectorized)
 spark.udf.register("p_uppercase", pandas_uppercase)
 
 # COMMAND ----------
 
 # MAGIC %sql 
-# MAGIC SELECT p_plus1(id) as p1, p_uppercase(firstName) as uc_name
+# MAGIC SELECT p_uppercase(firstName) as uc_name
 # MAGIC FROM 10m
 
 # COMMAND ----------
@@ -154,8 +155,4 @@ df.withColumn("nameStruct", struct("firstName", "lastName")).select(uppercase_na
 # MAGIC * [Databricks blog post - New Pandas UDFs and Python Type Hints in the Upcoming Release of Apache Spark 3.0](https://databricks.com/blog/2020/05/20/new-pandas-udfs-and-python-type-hints-in-the-upcoming-release-of-apache-spark-3-0.html)
 # MAGIC * [PySpark documentation - pandas_udf](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.functions.pandas_udf.html)
 # MAGIC * [Pandas UDFs Benchmark notebook](https://databricks-prod-cloudfront.cloud.databricks.com/public/4027ec902e239c93eaaa8714f173bcfc/1281142885375883/2174302049319883/7729323681064935/latest.html)
-# MAGIC * ["Old UDFs" vs pandas_udfs](https://databricks.com/blog/2017/10/30/introducing-vectorized-udfs-for-pyspark.html)
-
-# COMMAND ----------
-
-TODO: Debugging locally  
+# MAGIC * [Python UDFs vs pandas_udfs](https://databricks.com/blog/2017/10/30/introducing-vectorized-udfs-for-pyspark.html)
